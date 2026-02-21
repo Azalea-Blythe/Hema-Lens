@@ -41,24 +41,26 @@ User → Survey → Safety Guardrails → Image Capture\
     │   ├── scripts/
     │   │   ├── prepare_data.py
     │   │   ├── train.py
+    │   │   ├── export.py
     │   │   └── fusion.py
-    │   ├── models/
-    │   │   ├── conjunctiva_model.tflite
-    │   │   ├── fingernail_model.tflite
-    │   │   └── palm_model.tflite
-    │   └── data/ (gitignored)
+    │   └── models/
+    │       ├── conjunctiva_model.keras
+    │       ├── conjunctiva_model.tflite
+    │       ├── fingernail_model.keras
+    │       ├── fingernail_model.tflite
+    │       ├── palm_model.keras
+    │       └── palm_model.tflite
     │
     ├── backend/
     │   ├── main.py
     │   ├── database.py
-    │   ├── requirements.txt
-    │   └── railway.toml
+    │   └── hemalens.db
     │
-    ├── app/
-    │   └── lib/services/
-    │       └── fusion_service.dart
-    │
-    └── README.md
+    ├── Datasets/ (gitignored)
+    ├── hemalens.db
+    ├── implementation_plan_2.1.md
+    ├── README(2.1).md
+    └── requirements.txt
 
 ------------------------------------------------------------------------
 
