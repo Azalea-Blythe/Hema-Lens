@@ -1,11 +1,13 @@
 import numpy as np
 
-def fuse_risk(image_probs, survey_dict):
+def fuse_risk(image_probs_list, survey_dict):
     """
-    Fuses image probabilities with survey data based on WHO guidelines.
+    Fuses image probabilities from multiple scans (Conjunctiva, Fingernails, Palm) 
+    with survey data based on WHO guidelines.
     
     Args:
-        image_probs (dict): {'low': float, 'moderate': float, 'high': float}
+        image_probs_list (list of dict): List containing prob dicts for each scan,
+            e.g. [{'low': 0.8, 'moderate': 0.1, 'high': 0.1}, ...]
         survey_dict (dict): {
             'pregnant': bool,
             'heavy_menstrual_bleeding': bool,
@@ -20,9 +22,11 @@ def fuse_risk(image_probs, survey_dict):
     Returns:
         dict: {'adjusted_probs': dict, 'final_risk': str, 'confidence': float}
     """
-    low_prob = image_probs.get('low', 0.0)
-    mod_prob = image_probs.get('moderate', 0.0)
-    high_prob = image_probs.get('high', 0.0)
+    
+    # Average the probabilities across all scans provided
+    low_prob = sum(p.get('low', 0.0) for p in image_probs_list) / max(1, len(image_probs_list))
+    mod_prob = sum(p.get('moderate', 0.0) for p in image_probs_list) / max(1, len(image_probs_list))
+    high_prob = sum(p.get('high', 0.0) for p in image_probs_list) / max(1, len(image_probs_list))
 
     survey_boost = 0.0
     if survey_dict.get('pregnant', False):
@@ -72,7 +76,7 @@ def fuse_risk(image_probs, survey_dict):
 # Unit tests
 if __name__ == '__main__':
     def test_case(name, probs, survey, expected_tier):
-        res = fuse_risk(probs, survey)
+        res = fuse_risk([probs], survey)
         if res['final_risk'] == expected_tier:
             print(f"✅ {name}: {res['final_risk']} (Conf: {res['confidence']:.2f})")
         else:

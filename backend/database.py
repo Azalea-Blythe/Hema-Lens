@@ -34,7 +34,12 @@ def save_result(data: dict):
     cursor = conn.cursor()
     
     survey = data.get('survey', {})
-    probs = data.get('image_probs', {})
+    probs_list = data.get('image_probs_list', [])
+    
+    # Average the probabilities across all scans provided
+    avg_low = sum(p.get('low', 0.0) for p in probs_list) / max(1, len(probs_list))
+    avg_mod = sum(p.get('moderate', 0.0) for p in probs_list) / max(1, len(probs_list))
+    avg_high = sum(p.get('high', 0.0) for p in probs_list) / max(1, len(probs_list))
     
     cursor.execute('''
         INSERT INTO results (
@@ -46,8 +51,8 @@ def save_result(data: dict):
             final_risk, confidence
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
-        data.get('modality', 'unknown'),
-        probs.get('low', 0), probs.get('moderate', 0), probs.get('high', 0),
+        data.get('modality', 'combined'),
+        avg_low, avg_mod, avg_high,
         survey.get('pregnant', False),
         survey.get('heavy_menstrual_bleeding', False),
         survey.get('pica_present', False),

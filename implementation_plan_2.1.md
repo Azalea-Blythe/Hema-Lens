@@ -1,10 +1,10 @@
 # HemaLens — 24-Hour Hackathon Plan (3-Person Team)
 
 > [!IMPORTANT]
-> **Final approach confirmed**: 3-tier image classification (MobileNetV2 → Low/Moderate/High) + **WHO guideline-based survey risk fusion** for improved accuracy. Survey collects age, sex, BMI, pregnancy, symptoms, ethnic background, and camera details.
+> **Final approach confirmed**: 3-tier image classification (MobileNetV2 → Low/Moderate/High) + **WHO guideline-based survey risk fusion** for improved accuracy. Survey collects age, sex, pregnancy, symptoms, ethnic background, and camera details.
 
 > [!CAUTION]
-> **Data Bias & Safety Safeguard (Judge Feedback)**: Our training data only covers India, Ghana, and Italy. Skin tone heavily impacts conjunctiva/nailbed colour analysis. To prevent dangerous misdiagnosis, the app must ask for **Ethnicity**. If the user selects an unsupported ethnicity, the app will refuse the image scan and show an alert: *"This AI model is currently only trained on data from specific regions and cannot safely screen your skin tone yet."* We also track **Camera Quality** to evaluate hardware variance.
+> **Data Bias & Safety Safeguard (Judge Feedback)**: Our training data primarily covers India, Ghana, and Italy. Skin tone heavily impacts conjunctiva/nailbed/palm colour analysis. To prevent dangerous misdiagnosis, the app must ask for **Ethnicity** and be easily extensible to new regions. If the user selects an unsupported ethnicity, the app will refuse the image scan and show an alert: *"This AI model is currently only trained on data from specific regions and cannot safely screen your skin tone yet. We are actively collecting data to expand our models."* We also track **Camera Quality** to evaluate hardware variance.
 
 ---
 
@@ -12,10 +12,11 @@
 
 | File | Type | Hb Labels | 3-Tier Distribution |
 |------|------|-----------|--------------------|
-| [archive.zip](file:///d:/Projects/HemaLens/Datasets/archive.zip) | **Conjunctiva** (palpebral + forniceal) | ✅ Hb in `India.xlsx` g/dL | Low: 55, Mod: 38, High: **2** (~860 images, 95 patients) |
+| `archive.zip` | **Conjunctiva** (palpebral + forniceal) | ✅ Hb in `India.xlsx` g/dL | Low: 55, Mod: 38, High: **2** (~860 images, 95 patients) |
 | `CP-AnemiC dataset.rar` | **Conjunctiva** (palpebral) | ✅ Hb + `Severity` column in Excel | Low: ~286, Mod: ~300, High: ~124 (**710 images**) |
-| [data.zip](file:///d:/Projects/HemaLens/Datasets/data.zip) | **Fingernails** | ✅ Hb in `metadata.csv` g/L + bounding boxes | Low: 207, Mod: 25, High: **18** (250 images) |
-| [Fingernails.rar](file:///d:/Projects/HemaLens/Datasets/Fingernails.rar) | **Fingernails** | ❌ Binary only (no Hb values inside) | ~4,261 images — used for augmenting at-risk class |
+| `data.zip` | **Fingernails** | ✅ Hb in `metadata.csv` g/L + bounding boxes | Low: 207, Mod: 25, High: **18** (250 images) |
+| `Fingernails.rar` | **Fingernails** | ❌ Binary only (no Hb values inside) | ~4,261 images — mapped non-anemic to low, anemic to high |
+| `Palm.rar` | **Palm** | ❌ Binary only | ~4,260 images — mapped non-anemic to low, anemic to high |
 
 > [!NOTE]
 > `CP-AnemiC dataset.rar` contains `Anemia_Data_Collection_Sheet.xlsx` with columns: `IMAGE_ID`, `HB_LEVEL` (g/dL), `Severity` (Mild/Moderate/Severe/Non-Anemic), `Age`, `Gender`, `Hospital`. This is the richest source for High Risk label data.
@@ -54,32 +55,33 @@
 - [ ] Verify counts and class balance per modality
 
 **Hour 2–6: Model Training**
-- [ ] Train conjunctiva 3-class classifier (MobileNetV2, frozen base → head)
-- [ ] Train fingernail 3-class classifier (same architecture)
-- [ ] Evaluate both: accuracy, per-class F1, confusion matrix
+- [x] Train conjunctiva 3-class classifier (MobileNetV2, frozen base → head)
+- [x] Train fingernail 3-class classifier (same architecture)
+- [x] Train palm 3-class classifier (same architecture)
+- [x] Evaluate all: accuracy, per-class F1, confusion matrix
 
 **Hour 6–8: Export**
-- [ ] Convert both to [.tflite](file:///d:/Projects/HemaLens/ml/models/conjunctiva_model.tflite) with INT8 quantization
-- [ ] Test TFLite inference in Python
-- [ ] Commit [ml/models/conjunctiva_model.tflite](file:///d:/Projects/HemaLens/ml/models/conjunctiva_model.tflite) + `fingernail_model.tflite`
+- [x] Convert to `.tflite` with INT8 quantization
+- [x] Test TFLite inference in Python
+- [x] Commit `conjunctiva_model.tflite`, `fingernail_model.tflite`, and `palm_model.tflite`
 
 **Sync point @ Hour 8**: Hand off [.tflite](file:///d:/Projects/HemaLens/ml/models/conjunctiva_model.tflite) files to Friend 1
 
 **Hour 8–10: WHO Risk Fusion Module**
-- [ ] Create [ml/scripts/fusion.py](file:///d:/Projects/HemaLens/ml/scripts/fusion.py) — pure Python, no ML needed
-- [ ] Inputs: image model probabilities `[low, mod, high]` + survey dict
-- [ ] WHO adjustment rules (see table below)
-- [ ] Output: adjusted final risk tier + confidence
-- [ ] Unit test with 10 edge cases
+- [x] Create `ml/scripts/fusion.py` — pure Python, no ML needed
+- [x] Inputs: image model probabilities `[low, mod, high]` + survey dict
+- [x] WHO adjustment rules (see table below)
+- [x] Output: adjusted final risk tier + confidence
+- [x] Unit test with edge cases
 - [ ] Port same logic to `app/lib/services/fusion_service.dart` for Flutter
 
 **Hour 10–14: Thin FastAPI Backend**
-- [ ] Create [backend/main.py](file:///d:/Projects/HemaLens/backend/main.py) with FastAPI
-- [ ] `POST /api/results` — save a scan result + survey answers (JSON body)
-- [ ] `GET  /api/results` — return all results
-- [ ] `GET  /api/results/summary` — aggregate stats (for CHW supervisor)
-- [ ] `GET  /api/health` — health check
-- [ ] Local SQLite via `sqlite3` (no ORM needed)
+- [x] Create `backend/main.py` with FastAPI
+- [x] `POST /api/results` — save a scan result + survey answers (JSON body)
+- [x] `GET  /api/results` — return all results
+- [x] `GET  /api/results/summary` — aggregate stats (for CHW supervisor)
+- [x] `GET  /api/health` — health check
+- [x] Local SQLite via `sqlite3` using `database.py` (no ORM needed)
 - [ ] Deploy to [Railway.app](https://railway.app) free tier
 
 **Sync point @ Hour 14**: Share live API URL with Friend 1
@@ -95,7 +97,7 @@
 
 **Hour 2–9: Core Screens (with stub model)**
 - [ ] Disclaimer + consent screen
-- [ ] Home screen: choose scan type (👁️ Conjunctiva / 🖐️ Fingernail)
+- [ ] Home screen: choose scan type (👁️ Conjunctiva / 🖐️ Fingernail / ✋ Palm)
 - [ ] **Survey screen** (before capture):
   - Age, sex, pregnancy status (female only)
   - Symptom checklist: fatigue, dizziness, pallor, shortness of breath, pica

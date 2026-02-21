@@ -17,7 +17,7 @@ def startup_event():
 
 class ScanResult(BaseModel):
     modality: str
-    image_probs: Dict[str, float]
+    image_probs_list: list[Dict[str, float]]
     survey: Dict[str, Any]
     final_risk: str
     confidence: float
