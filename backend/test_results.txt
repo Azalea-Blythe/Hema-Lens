@@ -1,0 +1,44 @@
+﻿
+ΓöÇΓöÇ VALID SCENARIOS ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+[PASS] [V01 Base low risk - no risk factors] {'status': 'ok', 'message': 'Result saved', 'id': 82}
+[PASS] [V02 Base moderate - no risk factors] {'status': 'ok', 'message': 'Result saved', 'id': 83}
+[PASS] [V03 Strong image high - no boost] {'status': 'ok', 'message': 'Result saved', 'id': 84}
+[PASS] [V04 Pregnant woman - low image tips high] {'status': 'ok', 'message': 'Result saved', 'id': 85}
+[PASS] [V05 Pregnant + HMB - high expected] {'status': 'ok', 'message': 'Result saved', 'id': 86}
+[PASS] [V06 Pica only - moderate pushed high] {'status': 'ok', 'message': 'Result saved', 'id': 87}
+[PASS] [V07 Malaria history - moderate push] {'status': 'ok', 'message': 'Result saved', 'id': 88}
+[PASS] [V08 Fatigue alone - no boost (fatigue needs pallor)] {'status': 'ok', 'message': 'Result saved', 'id': 89}
+[PASS] [V09 Fatigue + Pallor together - boost applies] {'status': 'ok', 'message': 'Result saved', 'id': 90}
+[PASS] [V10 Vegetarian only - small push] {'status': 'ok', 'message': 'Result saved', 'id': 91}
+[PASS] [V11 Prior anaemia only - small push] {'status': 'ok', 'message': 'Result saved', 'id': 92}
+[PASS] [V12 Vegetarian + Prior anaemia together] {'status': 'ok', 'message': 'Result saved', 'id': 93}
+[PASS] [V13 Max boost scenario (all flags, low image)] {'status': 'ok', 'message': 'Result saved', 'id': 94}
+[PASS] [V14 Multi-image (3 scans) averaging - all high] {'status': 'ok', 'message': 'Result saved', 'id': 95}
+[PASS] [V15 Multi-image averaging - mixed] {'status': 'ok', 'message': 'Result saved', 'id': 96}
+[PASS] [V16 Male patient, high image] {'status': 'ok', 'message': 'Result saved', 'id': 97}
+[PASS] [V17 Male patient, no menstrual/pregnancy flags (valid)] {'status': 'ok', 'message': 'Result saved', 'id': 98}
+[PASS] [V18 Child patient age 10, low risk] {'status': 'ok', 'message': 'Result saved', 'id': 99}
+[PASS] [V19 Elderly patient age 70] {'status': 'ok', 'message': 'Result saved', 'id': 100}
+[PASS] [V20 Palm modality - Ghanaian] {'status': 'ok', 'message': 'Result saved', 'id': 101}
+[PASS] [V21 Even probability split, no boost - argmax picks moderate] {'status': 'ok', 'message': 'Result saved', 'id': 102}
+[PASS] [V22 Even probs + pica - tips to high] {'status': 'ok', 'message': 'Result saved', 'id': 103}
+[PASS] [V23 100%% high confidence] {'status': 'ok', 'message': 'Result saved', 'id': 104}
+[PASS] [V24 100%% low confidence] {'status': 'ok', 'message': 'Result saved', 'id': 105}
+[PASS] [V25 All moderate confidence] {'status': 'ok', 'message': 'Result saved', 'id': 106}
+
+ΓöÇΓöÇ IMPOSSIBLE / INVALID SCENARIOS ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+[FAIL] [I01 Missing modality field] Should have failed but got: {'detail': [{'type': 'missing', 'loc': ['body', 'modality'], 'msg': 'Field required', 'input': {'image_probs_list': [{'low': 0.8, 'moderate': 0.12, 'high': 0.08}], 'survey': {'gender': 'Female', 'age': 30, 'ethnicity': 'Indian Subcontinent', 'pregnant': False, 'heavy_menstrual_bleeding': False, 'pica_present': False, 'malaria_history': False, 'fatigue': False, 'pallor': False, 'vegetarian_diet': False, 'prior_anaemia_diagnosis': False}, 'final_risk': 'low', 'confidence': 0.8}}]}
+[FAIL] [I02 Missing image_probs_list] Should have failed but got: {'detail': [{'type': 'missing', 'loc': ['body', 'image_probs_list'], 'msg': 'Field required', 'input': {'modality': 'conjunctiva', 'survey': {'gender': 'Female', 'age': 30, 'ethnicity': 'Indian Subcontinent', 'pregnant': False, 'heavy_menstrual_bleeding': False, 'pica_present': False, 'malaria_history': False, 'fatigue': False, 'pallor': False, 'vegetarian_diet': False, 'prior_anaemia_diagnosis': False}, 'final_risk': 'low', 'confidence': 0.8}}]}
+[FAIL] [I03 Missing survey field] Should have failed but got: {'detail': [{'type': 'missing', 'loc': ['body', 'survey'], 'msg': 'Field required', 'input': {'modality': 'conjunctiva', 'image_probs_list': [{'low': 0.8, 'moderate': 0.12, 'high': 0.08}], 'final_risk': 'low', 'confidence': 0.8}}]}
+[FAIL] [I04 Missing final_risk] Should have failed but got: {'detail': [{'type': 'missing', 'loc': ['body', 'final_risk'], 'msg': 'Field required', 'input': {'modality': 'conjunctiva', 'image_probs_list': [{'low': 0.8, 'moderate': 0.12, 'high': 0.08}], 'survey': {'gender': 'Female', 'age': 30, 'ethnicity': 'Indian Subcontinent', 'pregnant': False, 'heavy_menstrual_bleeding': False, 'pica_present': False, 'malaria_history': False, 'fatigue': False, 'pallor': False, 'vegetarian_diet': False, 'prior_anaemia_diagnosis': False}, 'confidence': 0.8}}]}
+[FAIL] [I05 Missing confidence] Should have failed but got: {'detail': [{'type': 'missing', 'loc': ['body', 'confidence'], 'msg': 'Field required', 'input': {'modality': 'conjunctiva', 'image_probs_list': [{'low': 0.8, 'moderate': 0.12, 'high': 0.08}], 'survey': {'gender': 'Female', 'age': 30, 'ethnicity': 'Indian Subcontinent', 'pregnant': False, 'heavy_menstrual_bleeding': False, 'pica_present': False, 'malaria_history': False, 'fatigue': False, 'pallor': False, 'vegetarian_diet': False, 'prior_anaemia_diagnosis': False}, 'final_risk': 'low'}}]}
+[FAIL] [I06 confidence as a string instead of float] Should have failed but got: {'detail': [{'type': 'float_parsing', 'loc': ['body', 'confidence'], 'msg': 'Input should be a valid number, unable to parse string as a number', 'input': 'not-a-number'}]}
+[FAIL] [I07 image_probs_list contains non-dict (string)] Should have failed but got: {'detail': [{'type': 'dict_type', 'loc': ['body', 'image_probs_list', 0], 'msg': 'Input should be a valid dictionary', 'input': 'bad'}]}
+[FAIL] [I08 Completely empty payload] Should have failed but got: {'detail': [{'type': 'missing', 'loc': ['body', 'modality'], 'msg': 'Field required', 'input': {}}, {'type': 'missing', 'loc': ['body', 'image_probs_list'], 'msg': 'Field required', 'input': {}}, {'type': 'missing', 'loc': ['body', 'survey'], 'msg': 'Field required', 'input': {}}, {'type': 'missing', 'loc': ['body', 'final_risk'], 'msg': 'Field required', 'input': {}}, {'type': 'missing', 'loc': ['body', 'confidence'], 'msg': 'Field required', 'input': {}}]}
+[PASS] [I09 image_probs_list is empty list (zero scans)] {'status': 'ok', 'message': 'Result saved', 'id': 107}
+[PASS] [I10 Probability values negative (still accepted by API ΓÇö fusion handles it)] {'status': 'ok', 'message': 'Result saved', 'id': 108}
+
+ΓöÇΓöÇ SUMMARY ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  [PASS] Passed: 27
+  [FAIL] Failed: 8
+  Total:  35 / 35 cases

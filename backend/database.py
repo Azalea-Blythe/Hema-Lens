@@ -1,9 +1,12 @@
 import sqlite3
 import os
 
-DB_PATH = "hemalens.db"
+# On Railway, use /data for persistence (mounted volume); fallback to local
+_DATA_DIR = os.environ.get("RAILWAY_VOLUME_MOUNT_PATH", ".")
+DB_PATH = os.path.join(_DATA_DIR, "hemalens.db")
 
 def init_db():
+    os.makedirs(_DATA_DIR, exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute('''
@@ -74,29 +77,19 @@ def get_all_results():
     cursor = conn.cursor()
     cursor.execute('''SELECT * FROM results ORDER BY timestamp DESC''')
     rows = cursor.fetchall()
-    
-    # get column names
     col_names = [description[0] for description in cursor.description]
-    
-    results = []
-    for row in rows:
-        results.append(dict(zip(col_names, row)))
-        
+    results = [dict(zip(col_names, row)) for row in rows]
     conn.close()
     return results
 
 def get_summary_stats():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    
     cursor.execute("SELECT COUNT(*) FROM results")
     total_scans = cursor.fetchone()[0]
-    
     cursor.execute("SELECT final_risk, COUNT(*) FROM results GROUP BY final_risk")
     risk_distribution = dict(cursor.fetchall())
-    
     conn.close()
-    
     return {
         "total_scans": total_scans,
         "risk_distribution": risk_distribution
