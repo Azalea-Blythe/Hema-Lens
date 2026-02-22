@@ -1,3 +1,5 @@
+import '../services/fusion_service.dart';
+
 // ScanResult holds the final output of one complete scan session.
 class ScanResult {
   final int? id; // Auto-assigned by the database
@@ -6,6 +8,12 @@ class ScanResult {
   final Map<String, dynamic> surveyAnswers;
   final DateTime timestamp;
   final bool syncedToBackend;
+  // [low, moderate, high] probabilities after fusion — for visualisation only
+  final List<double>? adjustedProbs;
+  // Per-factor risk breakdown (image + survey contributions)
+  final List<RiskFactor>? factors;
+  final List<double>? rawImageProbs;
+  final double? totalSurveyBoost;
 
   ScanResult({
     this.id,
@@ -14,6 +22,10 @@ class ScanResult {
     required this.surveyAnswers,
     required this.timestamp,
     this.syncedToBackend = false,
+    this.adjustedProbs,
+    this.factors,
+    this.rawImageProbs,
+    this.totalSurveyBoost,
   });
 
   Map<String, dynamic> toMap() {

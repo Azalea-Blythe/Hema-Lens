@@ -55,6 +55,10 @@ class _HomeScreenState extends State<HomeScreen> {
       confidence: fusion.confidence,
       surveyAnswers: widget.survey.toMap(),
       timestamp: DateTime.now(),
+      adjustedProbs: fusion.adjustedProbs,
+      factors: fusion.factors,
+      rawImageProbs: fusion.rawImageProbs,
+      totalSurveyBoost: fusion.totalSurveyBoost,
     );
 
     setState(() => _isCalculating = false);
@@ -126,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       elevation: 8,
-                      shadowColor: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                      shadowColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
                     ),
                     onPressed: _calculateResult,
                     child: _isCalculating 
@@ -176,7 +180,7 @@ class _ScanOptionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isCompleted ? Colors.green.shade100 : Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  color: isCompleted ? Colors.green.shade100 : Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Text(icon, style: const TextStyle(fontSize: 28)),
