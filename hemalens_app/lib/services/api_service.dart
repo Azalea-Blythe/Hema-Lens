@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import '../models/scan_result.dart';
 
 class ApiService {
-  // Change this to your deployed Railway URL when available
-  static const String _baseUrl = 'http://10.0.2.2:8000';
+  // Production Railway URL
+  static const String _baseUrl = 'https://hema-lens-production.up.railway.app';
 
   static Future<bool> postResult(ScanResult result) async {
     try {

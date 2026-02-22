@@ -2,7 +2,6 @@ class SurveyData {
   final String gender; // 'Male', 'Female'
   final int age;
   final String ethnicity;
-  final String cameraQuality;
   final bool menopausal;
   final bool pregnant;
   final bool heavyMenstrualBleeding;
@@ -12,12 +11,13 @@ class SurveyData {
   final bool pallor;
   final bool vegetarianDiet;
   final bool priorAnaemiaDiagnosis;
+  // New symptoms
+  final bool glossitis;
 
   const SurveyData({
     required this.gender,
     required this.age,
     required this.ethnicity,
-    required this.cameraQuality,
     this.menopausal = false,
     this.pregnant = false,
     this.heavyMenstrualBleeding = false,
@@ -27,6 +27,7 @@ class SurveyData {
     this.pallor = false,
     this.vegetarianDiet = false,
     this.priorAnaemiaDiagnosis = false,
+    this.glossitis = false,
   });
 
   Map<String, dynamic> toMap() => {
@@ -38,6 +39,7 @@ class SurveyData {
     'pallor': pallor,
     'vegetarian_diet': vegetarianDiet,
     'prior_anaemia_diagnosis': priorAnaemiaDiagnosis,
+    'glossitis': glossitis,
   };
 
   // Supported ethnicities — exactly matching training dataset origins
@@ -53,11 +55,9 @@ class SurveyData {
     'Black / Ghanaian',
     'Caucasian / Italian',
     'Hispanic / Latino',
-    'Other',
   ];
 
   bool get isEthnicitySupported => supportedEthnicities.contains(ethnicity);
-  bool get isCameraQualityOk => cameraQuality != 'Low / Budget';
 
   /// Palm scan only for Ghanaian patients (training data origin)
   bool get requiresPalmScan => ethnicity == 'Black / Ghanaian';

@@ -96,6 +96,22 @@ class _CaptureScreenState extends State<CaptureScreen>
 
   Future<void> _submit(File imageFile) async {
     if (!mounted) return;
+
+    // Show confirmation screen first
+    final confirmed = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => _ConfirmPhotoScreen(
+          imageFile: imageFile,
+          modalityTitle: _modalityTitle(
+            context.read<ScanProvider>().currentModality,
+          ),
+        ),
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
     final provider = context.read<ScanProvider>();
     await provider.processImage(imageFile);
     if (!mounted) return;
@@ -302,11 +318,11 @@ class _CaptureScreenState extends State<CaptureScreen>
   String _modalityTitle(String m) {
     switch (m) {
       case 'conjunctiva':
-        return 'Step 1 — Conjunctiva';
+        return 'Step 1: Conjunctiva';
       case 'fingernail':
-        return 'Step 2 — Fingernails';
+        return 'Step 2: Fingernails';
       case 'palm':
-        return 'Step 3 — Palm';
+        return 'Step 3: Palm';
       default:
         return 'Capture';
     }
@@ -346,7 +362,6 @@ class _OvalPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final dark = Paint()..color = const Color.fromRGBO(0, 0, 0, 0.55);
     // Palm uses a wider oval; conjunctiva/fingernail a taller one
     final double ovalW = modality == 'palm'
         ? size.width * 0.80
@@ -360,8 +375,30 @@ class _OvalPainter extends CustomPainter {
       width: ovalW,
       height: ovalH,
     );
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), dark);
-    canvas.drawOval(ovalRect, Paint()..blendMode = BlendMode.clear);
+
+    // Create the full screen path
+    final screenPath = Path()
+      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+
+    // Create the oval path
+    final ovalPath = Path()..addOval(ovalRect);
+
+    // Subtract the oval from the screen to create a completely clear window
+    final overlayPath = Path.combine(
+      PathOperation.difference,
+      screenPath,
+      ovalPath,
+    );
+
+    // Draw the dark semi-transparent overlay everywhere EXCEPT the oval
+    canvas.drawPath(
+      overlayPath,
+      Paint()
+        ..color = const Color.fromRGBO(0, 0, 0, 0.65)
+        ..style = PaintingStyle.fill,
+    );
+
+    // Draw the bright green border around the clear oval
     canvas.drawOval(
       ovalRect,
       Paint()
@@ -466,6 +503,109 @@ class _ErrorView extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ── Photo Confirmation Screen ───────────────────────────────────────────────
+class _ConfirmPhotoScreen extends StatelessWidget {
+  final File imageFile;
+  final String modalityTitle;
+
+  const _ConfirmPhotoScreen({
+    required this.imageFile,
+    required this.modalityTitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        title: Text(
+          'Confirm $modalityTitle',
+          style: const TextStyle(fontSize: 16),
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: InteractiveViewer(
+              child: Image.file(imageFile, fit: BoxFit.contain),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: const BoxDecoration(
+              color: Color(0xFF0A1628),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Is this photo clear and in focus?',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Blurry or poorly lit photos will cause inaccurate ML predictions.',
+                  style: TextStyle(color: Color(0xFF8899AA), fontSize: 13),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () =>
+                            Navigator.pop(context, false), // Retake
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: const BorderSide(color: Color(0xFF334155)),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text('Retake'),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () =>
+                            Navigator.pop(context, true), // Use Photo
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF00D4AA),
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'Use Photo',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

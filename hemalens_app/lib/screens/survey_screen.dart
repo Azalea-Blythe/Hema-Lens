@@ -155,26 +155,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       ],
                       const SizedBox(height: 18),
 
-                      // Camera quality
-                      _label('Camera Quality'),
-                      const SizedBox(height: 8),
-                      _DropdownCard(
-                        value: provider.cameraQuality,
-                        items: const [
-                          'High / Flagship',
-                          'Medium',
-                          'Low / Budget',
-                        ],
-                        onChanged: (v) => provider.updateSurvey(camQ: v),
-                      ),
-                      if (!provider.surveyData.isCameraQualityOk) ...[
-                        const SizedBox(height: 8),
-                        _WarningBanner(
-                          text:
-                              '⚠ Low-quality cameras may give inaccurate colour readings.',
-                        ),
-                      ],
-                      const SizedBox(height: 30),
+                      // Camera quality removed per user request
 
                       // ── RISK FACTORS ────────────────────────────────────────
                       _sectionHeader('Risk Factors'),
@@ -184,7 +165,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       if (provider.surveyData.showMenopauseToggle) ...[
                         _CheckTile(
                           label: 'Menopausal / Post-menopausal',
-                          sublabel: 'Hides pregnancy & menstruation fields',
                           icon: Icons.elderly_woman_rounded,
                           value: provider.menopausal,
                           color: const Color(0xFFB0A0FF),
@@ -196,7 +176,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       if (provider.surveyData.showPregnancy) ...[
                         _CheckTile(
                           label: 'Currently pregnant',
-                          sublabel: '+15% high-risk weight',
                           icon: Icons.pregnant_woman_rounded,
                           value: provider.pregnant,
                           color: const Color(0xFF9C6FFF),
@@ -208,7 +187,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       if (provider.surveyData.showMenstrualBleeding) ...[
                         _CheckTile(
                           label: 'Heavy menstrual bleeding',
-                          sublabel: '+15% high-risk weight',
                           icon: Icons.water_drop_rounded,
                           value: provider.heavyMenstrualBleeding,
                           color: const Color(0xFFFF6B9D),
@@ -218,8 +196,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
                       _CheckTile(
                         label: 'Pica',
-                        sublabel:
-                            'Craving non-food items (dirt, clay, ice) — +12%',
                         icon: Icons.restaurant_menu_rounded,
                         value: provider.picaPresent,
                         color: const Color(0xFFFFB347),
@@ -227,7 +203,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       ),
                       _CheckTile(
                         label: 'History of malaria',
-                        sublabel: '+8% high-risk weight',
                         icon: Icons.bug_report_rounded,
                         value: provider.malariaHistory,
                         color: const Color(0xFFFF6B6B),
@@ -235,7 +210,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       ),
                       _CheckTile(
                         label: 'Vegetarian / vegan diet',
-                        sublabel: 'Low iron/B12 intake — +5%',
                         icon: Icons.eco_rounded,
                         value: provider.vegetarianDiet,
                         color: const Color(0xFF4CAF50),
@@ -243,7 +217,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       ),
                       _CheckTile(
                         label: 'Previously diagnosed with anaemia',
-                        sublabel: '+5% high-risk weight',
                         icon: Icons.medical_services_rounded,
                         value: provider.priorAnaemiaDiagnosis,
                         color: const Color(0xFF0099FF),
@@ -256,7 +229,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       const SizedBox(height: 12),
                       _CheckTile(
                         label: 'Chronic fatigue',
-                        sublabel: 'Combined with pallor: +8%',
+                        sublabel: 'Persistent tiredness',
                         icon: Icons.battery_2_bar_rounded,
                         value: provider.chronicFatigue,
                         color: const Color(0xFFFFA500),
@@ -269,6 +242,14 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         value: provider.pallor,
                         color: const Color(0xFFC8A8FF),
                         onChanged: (v) => provider.updateSurvey(pal: v),
+                      ),
+                      _CheckTile(
+                        label: 'Glossitis',
+                        sublabel: 'Sore, swollen, or smooth tongue',
+                        icon: Icons.medical_information_rounded,
+                        value: provider.surveyData.glossitis,
+                        color: const Color(0xFF00D4AA),
+                        onChanged: (v) => provider.updateSurvey(gloss: v),
                       ),
                       const SizedBox(height: 36),
                     ],
@@ -352,15 +333,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
           Navigator.pop(context);
           _goToScan(context, provider);
         },
-      );
-      return;
-    }
-
-    if (!survey.isCameraQualityOk) {
-      _showBlockingDialog(
-        context,
-        'Low Camera Quality',
-        'A low-quality camera may produce inaccurate colour readings, leading to dangerous misdiagnosis. Please use a higher-quality device or seek clinical screening.',
       );
       return;
     }
@@ -548,14 +520,14 @@ class _DropdownCard extends StatelessWidget {
 
 class _CheckTile extends StatelessWidget {
   final String label;
-  final String sublabel;
+  final String? sublabel;
   final IconData icon;
   final bool value;
   final Color color;
   final ValueChanged<bool> onChanged;
   const _CheckTile({
     required this.label,
-    required this.sublabel,
+    this.sublabel,
     required this.icon,
     required this.value,
     required this.color,
@@ -606,13 +578,14 @@ class _CheckTile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    sublabel,
-                    style: const TextStyle(
-                      color: Color(0xFF556677),
-                      fontSize: 11,
+                  if (sublabel != null && sublabel!.isNotEmpty)
+                    Text(
+                      sublabel!,
+                      style: const TextStyle(
+                        color: Color(0xFF556677),
+                        fontSize: 11,
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),

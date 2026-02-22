@@ -64,7 +64,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 56),
               // Hero text
               const Text(
-                'AI-Powered\nAnaemia Detection',
+                'AI-Powered\nPre-Screening',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 36,
@@ -86,11 +86,11 @@ class HomeScreen extends StatelessWidget {
               // How it works
               _StepBadge(n: 1, text: 'Complete a brief health survey'),
               const SizedBox(height: 14),
-              _StepBadge(n: 2, text: 'Scan your conjunctiva (inner eyelid)'),
+              _StepBadge(n: 2, text: 'Capture your conjunctiva'),
               const SizedBox(height: 14),
-              _StepBadge(n: 3, text: 'Scan your fingernails'),
+              _StepBadge(n: 3, text: 'Capture your fingernails'),
               const SizedBox(height: 14),
-              _StepBadge(n: 4, text: 'Receive your risk assessment'),
+              _StepBadge(n: 4, text: 'Review AI risk assessment'),
               const Spacer(),
               // CTA
               SizedBox(

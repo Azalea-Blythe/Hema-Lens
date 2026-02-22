@@ -31,6 +31,9 @@ class ScanProvider extends ChangeNotifier {
   bool vegetarianDiet = false;
   bool priorAnaemiaDiagnosis = false;
 
+  // New symptoms
+  bool glossitis = false;
+
   // ── Scan State ─────────────────────────────────────────────────────────────
   ScanStep step = ScanStep.survey;
   List<ImageProbs> imageProbsList = [];
@@ -42,7 +45,6 @@ class ScanProvider extends ChangeNotifier {
     gender: gender,
     age: age,
     ethnicity: ethnicity,
-    cameraQuality: cameraQuality,
     menopausal: menopausal,
     pregnant: pregnant,
     heavyMenstrualBleeding: heavyMenstrualBleeding,
@@ -52,6 +54,7 @@ class ScanProvider extends ChangeNotifier {
     pallor: pallor,
     vegetarianDiet: vegetarianDiet,
     priorAnaemiaDiagnosis: priorAnaemiaDiagnosis,
+    glossitis: glossitis,
   );
 
   // Returns the modality string for the current scan step
@@ -92,7 +95,6 @@ class ScanProvider extends ChangeNotifier {
     String? gen,
     int? ag,
     String? eth,
-    String? camQ,
     bool? meno,
     bool? preg,
     bool? hmb,
@@ -102,11 +104,11 @@ class ScanProvider extends ChangeNotifier {
     bool? pal,
     bool? veg,
     bool? prior,
+    bool? gloss,
   }) {
     if (gen != null) gender = gen;
     if (ag != null) age = ag;
     if (eth != null) ethnicity = eth;
-    if (camQ != null) cameraQuality = camQ;
     if (meno != null) {
       menopausal = meno;
       // Menopause clears reproductive flags
@@ -127,6 +129,7 @@ class ScanProvider extends ChangeNotifier {
     if (pal != null) pallor = pal;
     if (veg != null) vegetarianDiet = veg;
     if (prior != null) priorAnaemiaDiagnosis = prior;
+    if (gloss != null) glossitis = gloss;
     notifyListeners();
   }
 
@@ -224,6 +227,7 @@ class ScanProvider extends ChangeNotifier {
     pallor = false;
     vegetarianDiet = false;
     priorAnaemiaDiagnosis = false;
+    glossitis = false;
     notifyListeners();
   }
 }

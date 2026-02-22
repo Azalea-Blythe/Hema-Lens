@@ -17,6 +17,7 @@ class FusionService {
     if (survey.pregnant) surveyBoost += 0.15;
     if (survey.heavyMenstrualBleeding) surveyBoost += 0.15;
     if (survey.picaPresent) surveyBoost += 0.12;
+    if (survey.glossitis) surveyBoost += 0.10; // Glossitis warning sign
     if (survey.malariaHistory) surveyBoost += 0.08;
     if (survey.chronicFatigue && survey.pallor) surveyBoost += 0.08;
     if (survey.vegetarianDiet) surveyBoost += 0.05;

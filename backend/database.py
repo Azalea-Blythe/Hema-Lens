@@ -24,6 +24,7 @@ def init_db():
             survey_pallor BOOLEAN,
             survey_vegetarian_diet BOOLEAN,
             survey_prior_anaemia_diagnosis BOOLEAN,
+            survey_glossitis BOOLEAN,
             final_risk TEXT,
             confidence REAL,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -51,8 +52,9 @@ def save_result(data: dict):
             survey_pregnant, survey_heavy_menstrual_bleeding, survey_pica_present,
             survey_malaria_history, survey_fatigue, survey_pallor,
             survey_vegetarian_diet, survey_prior_anaemia_diagnosis,
+            survey_glossitis,
             final_risk, confidence
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
         data.get('modality', 'combined'),
         avg_low, avg_mod, avg_high,
@@ -64,6 +66,7 @@ def save_result(data: dict):
         survey.get('pallor', False),
         survey.get('vegetarian_diet', False),
         survey.get('prior_anaemia_diagnosis', False),
+        survey.get('glossitis', False),
         data.get('final_risk', 'unknown'),
         data.get('confidence', 0.0)
     ))
