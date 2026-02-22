@@ -40,8 +40,17 @@ class InferenceService {
     // Step 5: Run the model!
     _interpreter!.run(input, output);
 
-    // output[0] = [lowProb, modProb, highProb]
-    return List<double>.from(output[0]);
+    // output[0] = raw model output in ALPHABETICAL folder order:
+    //   index 0 → 'high'   (folder name 'high' comes first alphabetically)
+    //   index 1 → 'low'
+    //   index 2 → 'moderate'
+    // Remap to the canonical [low, moderate, high] order expected everywhere else.
+    final raw = output[0] as List;
+    return [
+      raw[1].toDouble(), // low
+      raw[2].toDouble(), // moderate
+      raw[0].toDouble(), // high
+    ];
   }
 
   void dispose() => _interpreter?.close();

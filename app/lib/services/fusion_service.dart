@@ -64,12 +64,22 @@ class FusionService {
       contribution: high, // the raw high-risk probability from the model
     ));
 
-    // Apply the boost and clamp to [0,1]
-    high = (high + boost).clamp(0.0, 1.0);
+    // Redistribute: take boost from low & mod proportionally, add to high
+    if (boost > 0 && (low + mod) > 0) {
+      final available = low + mod;
+      final effectiveBoost = boost.clamp(0.0, available);
+      final ratio = effectiveBoost / available;
+      low  -= low * ratio;
+      mod  -= mod * ratio;
+      high += effectiveBoost;
+    }
 
-    // Renormalize all three so they sum to 1.0
+    // Safety: clamp and renormalize so all three sum to 1.0
+    low  = low.clamp(0.0, 1.0);
+    mod  = mod.clamp(0.0, 1.0);
+    high = high.clamp(0.0, 1.0);
     final total = low + mod + high;
-    low /= total; mod /= total; high /= total;
+    if (total > 0) { low /= total; mod /= total; high /= total; }
 
     // Pick the tier with the highest probability
     final maxProb = [low, mod, high].reduce((a, b) => a > b ? a : b);
